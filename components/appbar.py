@@ -2,7 +2,7 @@ import flet as ft
 
 
 class AppBar(ft.UserControl):
-    def __init__(self, title="AppBar Example", height=56):
+    def __init__(self, title="AppBar Example", img_src="assets/logo.png", height=56):
         super().__init__()
 
         self.switcher = ft.Switch(on_change=lambda e: self.change_theme())
@@ -46,10 +46,10 @@ class AppBar(ft.UserControl):
                 [
                     ft.Icon(),
                     ft.Image(
-                        src="assets/logotok.jpg",
-                        width=40,
+                        src=img_src,
+                        # width=40,
                         height=40,
-                        fit=ft.ImageFit.CONTAIN,
+                        fit=ft.ImageFit.FIT_HEIGHT,
                     ),
                 ],
                 spacing=0,

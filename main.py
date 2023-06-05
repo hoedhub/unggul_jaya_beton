@@ -13,7 +13,7 @@ from routes.pekerjaan import Pekerjaan
 def main(page: ft.Page):
     page.padding = 0
 
-    appbar = AppBar(title="UNGGUL JAYA BETON")
+    appbar = AppBar(title="", img_src="assets/unggul-jaya-beton-logo-white.png")
 
     def change_theme():
         page.theme_mode = appbar.theme_mode
