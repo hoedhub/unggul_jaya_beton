@@ -1,13 +1,17 @@
 import flet as ft
+import os
 
-from components.appbar import AppBar
+# database imports
+from db_ujb import CurrentUser
+
+from com_appbar import AppBar
 
 # from components.modal import Modal
-from components.rail import Rail
-from components.alert import Dialog
+from com_rail import Rail
+from com_alert import Dialog
 
-from routes.login import LoginForm
-from routes.pekerjaan import Pekerjaan
+from route_login import LoginForm
+from route_pekerjaan import Pekerjaan
 
 
 def main(page: ft.Page):
@@ -42,12 +46,17 @@ def main(page: ft.Page):
         page.update()
 
         alert.update_dialog(props)
+        page.update()
 
     #
 
     # setup snack bar untuk parent
-    def open_snack(content):
-        page.snack_bar = ft.SnackBar(content)
+    def open_snack(text, action=None):
+        if action is None:
+            page.snack_bar = ft.SnackBar(ft.Text(text))
+        else:
+            page.snack_bar = ft.SnackBar(ft.Text(text), action=action)
+
         page.snack_bar.open = True
         page.update()
 
@@ -93,19 +102,37 @@ def main(page: ft.Page):
         margin=ft.margin.all(10),
         # bgcolor=ft.colors.AMBER_100,
     )
-    session = False
+
+    # Create an instance of DBlite
+    ujb = CurrentUser()
 
     def logging():
-        global session
-        session = True
-        app.content = logged_in
-        appbar.login()
-        page.update()
+        ujb.login_user(login.username.value, login.password.value)
+        if ujb.username is None:
+            # Failed login
+            open_dlg(
+                props={
+                    "title": "ERROR",
+                    "content": "Invalid username or password!",
+                    "actions": [
+                        ft.TextButton("Try again", on_click=lambda e: alert.close_dlg())
+                    ],
+                }
+            )
+            print(f"Invalid creds!")
+            return
+        else:
+            # Successful login
+            login.username.value = ""
+            login.password.value = ""
+            app.content = logged_in
+            appbar.login()
+            # app.update()
+            open_snack("Login successful")
 
     def loggedout():
-        global session
-        session = False
-        app.content = logged_out.form
+        ujb.logout_user()
+        app.content = login.form
         appbar.logout()
         page.update()
 
@@ -119,10 +146,11 @@ def main(page: ft.Page):
         ],
         expand=True,
     )
-    logged_out = LoginForm()
-    logged_out.logging = logging
+
+    login = LoginForm()
+    login.logging = logging
     app = ft.Container(expand=True)
-    app.content = logged_out.form
+    app.content = login.form
     page.add(app)
     appbar.change_theme(ft.ThemeMode.DARK)
 

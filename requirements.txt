@@ -1,4 +1,3 @@
 flet>=0.7.4
 pyinstaller>=5.7.0
 pillow>=9.4.0
-zodb>=5.8.0

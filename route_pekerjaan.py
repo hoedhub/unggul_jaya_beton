@@ -1,14 +1,7 @@
 import flet as ft
 import sys, os
 
-# setting path
-if getattr(sys, "frozen", False):
-    app_path = os.path.dirname(sys.executable)
-    sys.path.append(app_path)
-else:
-    app_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append("../components")
-from components.table import Table
+from com_table import Table
 
 
 class Pekerjaan(ft.UserControl):
